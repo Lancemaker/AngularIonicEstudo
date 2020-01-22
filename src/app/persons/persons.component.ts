@@ -10,6 +10,7 @@ import {map} from 'rxjs/operators';
 })
 export class PersonsComponent implements OnInit, OnDestroy {
     personList: string[];
+    isFetching = false;
     private personListSubs: Subscription;
     //private personService: PersonsService; << since we added private on the the constructor arguments, we dont need to use this line
 
@@ -19,14 +20,17 @@ export class PersonsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.prsService.fetchPersons();
-        //this.personList = this.prsService.persons;
         this.personListSubs = this.prsService.personsChanged.subscribe( Persons => {
             this.personList = Persons;
+            this.isFetching = false;
         });
+        this.isFetching = true;
+        this.prsService.fetchPersons();
+        //this.personList = this.prsService.persons;
+
     }
 
-    onRemovePerson(personName: string){
+    onRemovePerson(personName: string) {
         this.prsService.removePerson(personName);
     }
 
